@@ -7,7 +7,7 @@ public abstract class Logger {
     abstract public void log(String message);
 
     public static Logger create() {
-        return new LoggerImpl();
+        return new ApacheCommonsLogAdapter();
     }
 
 }
