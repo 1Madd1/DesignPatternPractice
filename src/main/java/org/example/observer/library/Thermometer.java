@@ -1,6 +1,6 @@
 package org.example.observer.library;
 
-public class Thermometer {
+public class Thermometer extends Observable {
     public double temperatureInKelvin = -1.0;
     private final String KELVIN_FORMAT = "%,.1fK";
     private final String CELCIUS_FORMAT = "%,.1fC";
@@ -11,6 +11,7 @@ public class Thermometer {
 
     void driverValue(long value) {
         this.temperatureInKelvin = value/100.0;
+        super.notifyDependents();
     }
 
     public String getTemperatureKelvin() {
