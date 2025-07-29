@@ -1,11 +1,9 @@
 package org.example.template_method;
 
-public class QueryPeople implements Query {
+public class QueryPeople extends AbstractQuery {
+
     @Override
-    public Result execute() {
-        Connection c = new Connection();
-        Result r = c.execute("SELECT * FROM PEOPLE");
-        c.close();
-        return r;
+    protected String getQueryString() {
+        return "SELECT * FROM PEOPLE";
     }
 }
