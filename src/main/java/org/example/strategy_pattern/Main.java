@@ -16,13 +16,14 @@ public class Main {
                 new User("George")
 
         };
-        Printer p = new Printer();
+        Printer p = new Printer(Printer.QueueStrategy.JobPriority);
         p.start();
         for (int i = 0; i < NUMBER_OF_JOBS; i++) {
             p.print(
                     new Job(
                             u[r.nextInt(u.length)],
-                            "Content set (something random=" + r.nextInt() + ")" + i
+                            "Content set (something random=" + r.nextInt() + ")" + i,
+                            r.nextInt(100)
                     )
 
             );

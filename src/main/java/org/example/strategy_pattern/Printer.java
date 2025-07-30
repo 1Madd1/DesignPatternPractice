@@ -1,16 +1,30 @@
 package org.example.strategy_pattern;
 
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Random;
 
-public class Printer extends Thread{
+public class Printer extends Thread {
+
+    public enum QueueStrategy {
+        FIFO,
+        JobPriority
+    }
+
     private boolean shouldRun = true;
-    private List<Job> jobs;
+//    private PrinterQueue printerQueue = new SimpleFIFOPrinterQueue();
+//    private PrinterQueue printerQueue = new JobPriorityPrinterQueue();
     private Random myRandom = new Random();
+    private PrinterQueue printerQueue;
 
     public Printer() {
-        this.jobs = new LinkedList<Job>();
+        this(QueueStrategy.FIFO);
+    }
+
+    public Printer(QueueStrategy strategy) {
+        if (strategy == QueueStrategy.FIFO) {
+            this.printerQueue = new SimpleFIFOPrinterQueue();
+        } else if (strategy == QueueStrategy.JobPriority) {
+            this.printerQueue = new JobPriorityPrinterQueue();
+        }
     }
 
     @Override
@@ -18,31 +32,16 @@ public class Printer extends Thread{
         while (this.shouldRun) {
             try {
                 Thread.sleep(100);
-                Job j = null;
-                synchronized (this) {
-                    j = this.getNextJob();
-                }
+                Job j = this.printerQueue.getNextJob();
+
                 if (j != null) {
                     this.printJob(j);
-                    synchronized (this) {
-                        this.removeJob(j);
-                    }
                     this.informUser(j);
                 }
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
-    }
-
-    private Job getNextJob() {
-        if (this.jobs.isEmpty())
-            return null;
-        return this.jobs.get(0);
-    }
-
-    private void removeJob(Job j) {
-        this.jobs.remove(0);
     }
 
     private void printJob(Job j) {
@@ -72,7 +71,7 @@ public class Printer extends Thread{
     }
 
     synchronized public void print(Job job) {
-        this.jobs.add(job);
+        this.printerQueue.addJob(job);
     }
 
 
